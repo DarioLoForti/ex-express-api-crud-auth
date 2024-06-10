@@ -123,6 +123,28 @@ const bodyData = {
       },
     },
   },
+  userId: {
+    in: ["body"],
+    isInt: {
+      errorMessage: "User ID must be an integer.",
+      bail: true,
+    },
+    custom: {
+      options: async (value) => {
+        const userId = parseInt(value);
+        const user = await prisma.user.findUnique({
+          where: {
+            id: userId,
+          },
+        });
+
+        if (!user) {
+          throw new Error(`User with ID ${userId} not found.`);
+        }
+        return true;
+      },
+    },
+  },
 };
 
 module.exports = {
