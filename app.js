@@ -4,6 +4,8 @@ const port = 3000;
 
 require("dotenv").config();
 
+const cors = require("cors");
+
 const postsRouter = require("./routers/postsRouter");
 const categoriesRouter = require("./routers/categoriesRouter");
 const tagsRouter = require("./routers/tagsRouter");
@@ -13,6 +15,8 @@ const errorHandler = require("./middleware/errorHandler");
 const notFoundHandler = require("./middleware/notFoundHandler");
 
 app.use(express.json());
+
+app.use(cors());
 
 app.use("/posts", postsRouter);
 app.use("/categories", categoriesRouter);
