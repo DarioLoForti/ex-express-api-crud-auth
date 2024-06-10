@@ -1,62 +1,65 @@
-const { de } = require("@faker-js/faker");
 const { PrismaClient } = require("@prisma/client");
-const e = require("express");
 const prisma = new PrismaClient();
+const generateToken = require("../utils/generateToken.js");
+const { hashPassword, comparePassword } = require("../utils/password.js");
+require("dotenv").config();
 
 const register = async (req, res) => {
-  const { email, password, name } = req.body;
-
-  const hashedPassword = bcrypt.hashSync(password, 10);
-
   try {
-    const user = await prisma.user.create({
-      data: {
-        email,
-        password: hashedPassword,
-        name,
-      },
-    });
+    const { email, name, password } = req.body;
 
-    res.json(user);
-  } catch (error) {
-    res.json({ error: "An error occurred" });
-  }
-};
+    const data = {
+      email,
+      name,
+      password: await hashPassword(password),
+    };
 
-const login = async (req, res) => {
-  const { email, password } = req.body;
+    const user = await prisma.user.create({ data });
 
-  try {
-    const user = await prisma.user.findUnique({
-      where: {
-        email,
-      },
-    });
-
-    const eventError = new Error("Invalid email or password");
-    if (!user) {
-      throw eventError;
-    }
-
-    const validPassword = bcrypt.compareSync(password, user.password);
-    if (!validPassword) {
-      throw eventError;
-    }
-
-    const token = generateeToken({
+    const token = generateToken({
       email: user.email,
       name: user.name,
     });
 
-    delete user.password;
     delete user.id;
+    delete user.password;
 
-    res.json({
-      user,
-      token,
-    });
+    res.json({ token, data: user });
   } catch (error) {
-    res.json({ error: "An error occurred" });
+    res.json({ error: error.message });
+  }
+};
+
+const login = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    const user = await prisma.user.findUnique({
+      where: { email },
+    });
+
+    const eventualeErrore = new RestError(`Email o password errati.`, 400);
+
+    if (!user) {
+      throw eventualeErrore;
+    }
+
+    const isPasswordValid = await comparePassword(password, user.password);
+    if (!isPasswordValid) {
+      throw eventualeErrore;
+    }
+
+    const token = generateToken({
+      email: user.email,
+      name: user.name,
+    });
+
+    delete user.id;
+    delete user.password;
+
+    res.json({ token, data: user });
+  } catch (error) {
+    res.json({ error: error.message });
   }
 };
 
