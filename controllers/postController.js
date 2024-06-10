@@ -1,9 +1,10 @@
 const { tr, th } = require("@faker-js/faker");
 const { PrismaClient } = require("@prisma/client");
+const { use } = require("../routers/postsRouter");
 const prisma = new PrismaClient();
 
 const store = async (req, res) => {
-  const { title, content, categoryId, tags } = req.body;
+  const { title, content, UserId, categoryId, tags } = req.body;
 
   const slug = title.toLowerCase().split(" ").join("-");
 
@@ -18,6 +19,10 @@ const store = async (req, res) => {
 
   if (categoryId) {
     data.categoryId = categoryId;
+  }
+
+  if (UserId) {
+    data.UserId = UserId;
   }
   try {
     const post = await prisma.post.create({
@@ -76,6 +81,10 @@ const index = async (req, res) => {
             name: true,
           },
         },
+        user: {
+          select: {
+            email: true,
+          },
       },
     });
 
@@ -101,6 +110,10 @@ const show = async (req, res) => {
             name: true,
           },
         },
+        user: {
+          select: {
+            email: true,
+          },
       },
     });
     if (post) {
@@ -116,7 +129,7 @@ const show = async (req, res) => {
 const update = async (req, res) => {
   try {
     const slug = req.params.slug;
-    const { title, content, published, categoryId, tags } = req.body;
+    const { title, content, published, userId, categoryId, tags } = req.body;
     const newSlug = title.toLowerCase().split(" ").join("-");
 
     const data = {
@@ -130,6 +143,10 @@ const update = async (req, res) => {
     };
     if (categoryId) {
       data.categoryId = categoryId;
+    }
+
+    if (userId) {
+      data.userId = userId;
     }
 
     const post = await prisma.post.update({
