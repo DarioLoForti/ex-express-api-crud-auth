@@ -7,7 +7,6 @@ const { slugValidator } = require("../validations/slug.js");
 const { bodyData } = require("../validations/posts.js");
 const auth = require("../middleware/auth.js");
 const authorizePost = require("../middleware/authorizePost.js");
-const { ro } = require("@faker-js/faker");
 
 router.use(auth);
 

@@ -1,6 +1,5 @@
-const { tr, th } = require("@faker-js/faker");
 const { PrismaClient } = require("@prisma/client");
-const { use } = require("../routers/postsRouter");
+
 const prisma = new PrismaClient();
 
 const store = async (req, res) => {
@@ -85,6 +84,7 @@ const index = async (req, res) => {
           select: {
             email: true,
           },
+        },
       },
     });
 
@@ -114,6 +114,7 @@ const show = async (req, res) => {
           select: {
             email: true,
           },
+        },
       },
     });
     if (post) {
