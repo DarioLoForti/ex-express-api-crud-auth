@@ -6,7 +6,7 @@ async function main() {
   const posts = [];
 
   for (let i = 0; i < 50; i++) {
-    const title = faker.lorem.words();
+    const title = faker.lorem.words(2);
     const slug = title.toLowerCase().split(" ").join("-");
     const content = faker.lorem.paragraphs(3);
     const published = true;
