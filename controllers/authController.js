@@ -3,6 +3,8 @@ const prisma = new PrismaClient();
 const generateToken = require("../utils/generateToken.js");
 const { hashPassword, comparePassword } = require("../utils/password.js");
 require("dotenv").config();
+const { PORT, HOST } = process.env;
+const port = PORT || 3000;
 
 const register = async (req, res) => {
   try {
@@ -13,6 +15,10 @@ const register = async (req, res) => {
       name,
       password: await hashPassword(password),
     };
+
+    if (req.file) {
+      data.image_path = `${HOST}:${port}/uploads/${req.file.filename}`;
+    }
 
     const user = await prisma.user.create({ data });
 

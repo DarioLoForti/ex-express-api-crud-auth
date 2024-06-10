@@ -18,6 +18,8 @@ app.use(express.json());
 
 app.use(cors());
 
+app.use(express.static("public"));
+
 app.use("/posts", postsRouter);
 app.use("/categories", categoriesRouter);
 app.use("/tags", tagsRouter);
