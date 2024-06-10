@@ -5,6 +5,9 @@ const postsController = require("../controllers/postController");
 const validator = require("../middleware/validator.js");
 const { slugValidator } = require("../validations/slug.js");
 const { bodyData } = require("../validations/posts.js");
+const auth = require("../middleware/auth.js");
+
+router.use(auth);
 
 router.post("/", validator(bodyData), postsController.store);
 
