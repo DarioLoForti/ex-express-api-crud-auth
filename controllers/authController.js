@@ -38,7 +38,7 @@ const login = async (req, res) => {
       where: { email },
     });
 
-    const eventualeErrore = new RestError(`Email o password errati.`, 400);
+    const eventualeErrore = new Error("Invalid email or password");
 
     if (!user) {
       throw eventualeErrore;

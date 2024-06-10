@@ -1,7 +1,7 @@
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
-const registerBody = {
+const registerData = {
   email: {
     in: ["body"],
     notEmpty: {
@@ -52,7 +52,7 @@ const registerBody = {
   },
 };
 
-const loginBody = {
+const loginData = {
   email: {
     in: ["body"],
     notEmpty: {
@@ -76,6 +76,6 @@ const loginBody = {
 };
 
 module.exports = {
-  registerBody,
-  loginBody,
+  registerData,
+  loginData,
 };
