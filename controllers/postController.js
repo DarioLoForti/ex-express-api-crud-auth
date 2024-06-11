@@ -1,6 +1,8 @@
 const { PrismaClient } = require("@prisma/client");
-
 const prisma = new PrismaClient();
+const deletePostImage = require("../utils/deletePostImage.js");
+const { PORT, HOST } = process.env;
+const port = PORT || 3000;
 
 const store = async (req, res) => {
   const { title, content, UserId, categoryId, tags } = req.body;
@@ -15,6 +17,9 @@ const store = async (req, res) => {
       connect: tags.map((id) => ({ id })),
     },
   };
+  if (req.file) {
+    data.image_path = `${HOST}:${port}/imagepost/${req.file.filename}`;
+  }
 
   if (categoryId) {
     data.categoryId = categoryId;
@@ -29,6 +34,9 @@ const store = async (req, res) => {
     });
     res.json(post);
   } catch (error) {
+    if (req.file) {
+      deletePostImage(req.file.filename);
+    }
     res.json({ error: "An error occurred" });
   }
 };
@@ -142,6 +150,11 @@ const update = async (req, res) => {
         set: tags.map((id) => ({ id: id })),
       },
     };
+
+    if (req.file) {
+      data.image_path = `${HOST}:${port}/imagepost/${req.file.filename}`;
+    }
+
     if (categoryId) {
       data.categoryId = categoryId;
     }

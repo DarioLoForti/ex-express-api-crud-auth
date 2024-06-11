@@ -8,9 +8,26 @@ const { bodyData } = require("../validations/posts.js");
 const auth = require("../middleware/auth.js");
 const authorizePost = require("../middleware/authorizePost.js");
 
+const multer = require("multer");
+const path = require("path");
+
+const storage = multer.diskStorage({
+  destination: "public/uploads",
+  filename: (req, file, cf) => {
+    const fileType = path.extname(file.originalname);
+    cf(null, String(Date.now()) + fileType);
+  },
+});
+
+const upload = multer({ storage });
+
 router.use(auth);
 
-router.post("/", validator(bodyData), postsController.store);
+router.post(
+  "/",
+  [upload.single("postImage"), validator(bodyData)],
+  postsController.store
+);
 
 router.get("/", postsController.index);
 
