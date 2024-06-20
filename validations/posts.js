@@ -70,10 +70,10 @@ const bodyData = {
   },
   categoryId: {
     in: ["body"],
-    isInt: {
-      errorMessage: "Category ID must be an integer.",
-      bail: true,
-    },
+    // isInt: {
+    //   errorMessage: "Category ID must be an integer.",
+    //   bail: true,
+    // },
     custom: {
       options: async (value) => {
         const categoryId = parseInt(value);
@@ -101,7 +101,8 @@ const bodyData = {
       bail: true,
     },
     custom: {
-      options: async (value) => {
+      options: async (valueString) => {
+        const value = valueString.map((tag) => parseInt(tag));
         if (value.length === 0) {
           throw new Error("Tags must have at least one item.");
         }
@@ -123,28 +124,28 @@ const bodyData = {
       },
     },
   },
-  userId: {
-    in: ["body"],
-    isInt: {
-      errorMessage: "User ID must be an integer.",
-      bail: true,
-    },
-    custom: {
-      options: async (value) => {
-        const userId = parseInt(value);
-        const user = await prisma.user.findUnique({
-          where: {
-            id: userId,
-          },
-        });
+  // userId: {
+  //   in: ["body"],
+  //   isInt: {
+  //     errorMessage: "User ID must be an integer.",
+  //     bail: true,
+  //   },
+  //   custom: {
+  //     options: async (value) => {
+  //       const userId = parseInt(value);
+  //       const user = await prisma.user.findUnique({
+  //         where: {
+  //           id: userId,
+  //         },
+  //       });
 
-        if (!user) {
-          throw new Error(`User with ID ${userId} not found.`);
-        }
-        return true;
-      },
-    },
-  },
+  //       if (!user) {
+  //         throw new Error(`User with ID ${userId} not found.`);
+  //       }
+  //       return true;
+  //     },
+  //   },
+  // },
 };
 
 module.exports = {

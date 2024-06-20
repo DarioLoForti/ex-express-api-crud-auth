@@ -34,7 +34,7 @@ const register = async (req, res) => {
     res.json({ token, data: user });
   } catch (error) {
     if (req.file) {
-      deleteImage(req.file.filename);
+      deleteImage("uploads", req.file.filename);
     }
     res.json({ error: error.message });
   }
@@ -73,7 +73,17 @@ const login = async (req, res) => {
   }
 };
 
+const index = async (req, res) => {
+  try {
+    const users = await prisma.user.findMany();
+    res.json(users);
+  } catch (error) {
+    res.json({ error: "An error occurred" });
+  }
+};
+
 module.exports = {
   register,
   login,
+  index,
 };
