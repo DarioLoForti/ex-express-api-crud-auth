@@ -1,4 +1,3 @@
-const { th } = require("@faker-js/faker");
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
@@ -70,10 +69,10 @@ const bodyData = {
   },
   categoryId: {
     in: ["body"],
-    // isInt: {
-    //   errorMessage: "Category ID must be an integer.",
-    //   bail: true,
-    // },
+    isInt: {
+      errorMessage: "Category ID must be an integer.",
+      bail: true,
+    },
     custom: {
       options: async (value) => {
         const categoryId = parseInt(value);
@@ -101,23 +100,23 @@ const bodyData = {
       bail: true,
     },
     custom: {
-      options: async (valueString) => {
-        const value = valueString.map((tag) => parseInt(tag));
-        if (value.length === 0) {
+      options: async (idsStrings) => {
+        const ids = idsStrings.map((id) => parseInt(id));
+        if (ids.length === 0) {
           throw new Error("Tags must have at least one item.");
         }
-        const notIntegerId = value.find((tag) => isNaN(parseInt(tag)));
+        const notIntegerId = ids.find((id) => isNaN(parseInt(id)));
         if (notIntegerId) {
           throw new Error("Tag ID must be an integer.");
         }
         const tags = await prisma.tag.findMany({
           where: {
             id: {
-              in: value,
+              in: ids,
             },
           },
         });
-        if (tags.length !== value.length) {
+        if (tags.length !== ids.length) {
           throw new Error("Some tags not found.");
         }
         return true;

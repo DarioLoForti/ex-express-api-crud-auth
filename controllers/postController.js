@@ -1,35 +1,38 @@
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 const deleteImage = require("../utils/deleteImage.js");
+const { tr } = require("@faker-js/faker");
+require("dotenv").config();
 const { PORT, HOST } = process.env;
 const port = PORT || 3000;
 
 const store = async (req, res) => {
-  const { title, content, UserId, categoryId, tags, image, published } =
-    req.body;
+  const { title, content, tags, categoryId, userId } = req.body;
+
   console.log("Dati ricevuti:", req.body);
+
   const slug = title.toLowerCase().split(" ").join("-");
 
   const data = {
     title,
     content,
     slug,
-    published,
-    image_path: image,
+    published: req.body.published ? true : false,
     tags: {
-      connect: tags.map((tag) => ({ tag: parseInt(tag) })),
+      connect: tags.map((id) => ({ id: parseInt(id) })),
     },
   };
+
   if (req.file) {
-    data.image_path = `${HOST}:${port}/image/${req.file.filename}`;
+    data.image = `${HOST}:${port}/image/${req.file.filename}`;
   }
 
   if (categoryId) {
     data.categoryId = parseInt(categoryId);
   }
 
-  if (UserId) {
-    data.UserId = parseInt(UserId);
+  if (userId) {
+    data.userId = parseInt(UserId);
   }
   try {
     const post = await prisma.post.create({
