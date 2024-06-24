@@ -91,6 +91,7 @@ const index = async (req, res) => {
         },
         tags: {
           select: {
+            id: true,
             name: true,
           },
         },
@@ -121,6 +122,7 @@ const show = async (req, res) => {
         },
         tags: {
           select: {
+            id: true,
             name: true,
           },
         },

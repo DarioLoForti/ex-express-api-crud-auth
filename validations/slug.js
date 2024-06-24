@@ -1,6 +1,6 @@
 const slugValidator = {
   slug: {
-    in: ["body"],
+    in: ["params"],
     notEmpty: {
       errorMessage: "Slug is required.",
       bail: true,
@@ -13,6 +13,7 @@ const slugValidator = {
       errorMessage: "Slug should be at least 3 characters.",
       options: { min: 3 },
     },
+    toString: true,
   },
 };
 
