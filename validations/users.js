@@ -26,6 +26,7 @@ const registerData = {
   },
   name: {
     in: ["body"],
+    options: true,
     isString: {
       errorMessage: "Name must be a string.",
       bail: true,
